@@ -38,19 +38,19 @@ public class TransactionServiceImpl implements TransactionService {
 		TransactionRequest cleanTransactionRequest = clean(transactionRequest);
 
 		log.info("Decomposing transactionRequest for further processing.");
-		Set<HoldingStock> holdingStocks = cleanTransactionRequest.getHoldingStock();
-		Set<ModelStock> modelStocks = cleanTransactionRequest.getModelStock();
+		Set<HoldingStock> holdingStocks = cleanTransactionRequest.getHoldingStocks();
+		Set<ModelStock> modelStocks = cleanTransactionRequest.getModelStocks();
 
 		return transactionsNeededToMakeModel(holdingStocks, modelStocks);
 	}
 
 	private TransactionRequest clean(TransactionRequest transactionRequest) {
 		log.debug("Upper-casing all the stock names for holdings.");
-		Set<HoldingStock> holdingStocks = transactionRequest.getHoldingStock();
+		Set<HoldingStock> holdingStocks = transactionRequest.getHoldingStocks();
 		holdingStocks.forEach(hs -> hs.setName(hs.getName().toUpperCase()));
 
 		log.debug("Removing entries of stocks with 0%.");
-		Set<ModelStock> modelStocks = transactionRequest.getModelStock().stream()
+		Set<ModelStock> modelStocks = transactionRequest.getModelStocks().stream()
 				.filter(ms -> ms.getPercentage()!=0)
 				.collect(Collectors.toSet());
 
@@ -131,7 +131,7 @@ public class TransactionServiceImpl implements TransactionService {
 			throw new IllegalArgumentException(errorMessage);
 		}
 
-		double modelStocksPercentageSum = transactionRequest.getModelStock().stream()
+		double modelStocksPercentageSum = transactionRequest.getModelStocks().stream()
 				.mapToDouble(ModelStock::getPercentage)
 				.sum();
 

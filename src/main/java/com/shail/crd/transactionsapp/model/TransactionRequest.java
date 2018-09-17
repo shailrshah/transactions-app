@@ -15,11 +15,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionRequest {
-	@NotNull(message = "holdingStock should not be null")
+	@NotNull(message = "holdingStocks should not be null")
 	@Valid
-	Set<HoldingStock> holdingStock;
+	Set<HoldingStock> holdingStocks;
 
-	@NotNull(message = "modelStock should not be null")
+	@NotNull(message = "modelStocks should not be null")
 	@Valid
-	Set<ModelStock> modelStock;
+	Set<ModelStock> modelStocks;
 }

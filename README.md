@@ -10,7 +10,7 @@ This repository contains a Spring Boot application that can be used to determine
 - Send a `POST` request to `localhost:8080/api/transactions` with the following JSON body:
 ```
 {
-  "holdingStock" : [ {
+  "holdingStocks" : [ {
     "name" : "GOOGL",
     "quantity" : 100
   }, {
@@ -20,7 +20,7 @@ This repository contains a Spring Boot application that can be used to determine
     "name" : "MSFT",
     "quantity" : 50.0
   }],
-  "modelStock" : [ {
+  "modelStocks" : [ {
     "name" : "AAPL",
     "percentage" : 40.0
   }, {
