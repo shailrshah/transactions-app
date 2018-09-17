@@ -45,14 +45,18 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	private TransactionRequest clean(TransactionRequest transactionRequest) {
-		log.debug("Upper-casing all the stock names for holdings.");
-		Set<HoldingStock> holdingStocks = transactionRequest.getHoldingStocks();
-		holdingStocks.forEach(hs -> hs.setName(hs.getName().toUpperCase()));
+		log.debug("Removing entries of stocks with no quantity");
+		Set<HoldingStock> holdingStocks = transactionRequest.getHoldingStocks().stream()
+				.filter(hs -> hs.getQuantity()!=0)
+				.collect(Collectors.toSet());
 
 		log.debug("Removing entries of stocks with 0%.");
 		Set<ModelStock> modelStocks = transactionRequest.getModelStocks().stream()
 				.filter(ms -> ms.getPercentage()!=0)
 				.collect(Collectors.toSet());
+
+		log.debug("Upper-casing all the stock names for holdings.");
+		holdingStocks.forEach(hs -> hs.setName(hs.getName().toUpperCase()));
 
 		log.debug("Upper-casing all the stock names for models.");
 		modelStocks.forEach(ms -> ms.setName(ms.getName().toUpperCase()));
@@ -103,11 +107,10 @@ public class TransactionServiceImpl implements TransactionService {
 
 		// Stocks in holdingStocks but not in modelStocks can be sold off in full
 		holdingStocks.forEach(hs -> {
-			if(!modelStockNames.contains(hs.getName()) && hs.getQuantity() > 0) {
-				Transaction transaction = new Transaction(hs.getName(), hs.getQuantity(), TransactionType.SELL);
-				log.info("New Transaction: {}", transaction);
-				transactions.add(transaction);
-			}
+			if(modelStockNames.contains(hs.getName())) return;
+			Transaction transaction = new Transaction(hs.getName(), hs.getQuantity(), TransactionType.SELL);
+			log.info("New Transaction: {}", transaction);
+			transactions.add(transaction);
 		});
 
 		log.info("{}", transactions);
@@ -135,8 +138,8 @@ public class TransactionServiceImpl implements TransactionService {
 				.mapToDouble(ModelStock::getPercentage)
 				.sum();
 
-		if(modelStocksPercentageSum != 100) {
-			String errorMessage = "The percentage of all the model stocks should add up to 100";
+		if(modelStocksPercentageSum != 100 && modelStocksPercentageSum != 0) {
+			String errorMessage = "The percentage of all the model stocks should add up to 0 or 100";
 			log.error(errorMessage);
 			throw new IllegalArgumentException(errorMessage);
 		}

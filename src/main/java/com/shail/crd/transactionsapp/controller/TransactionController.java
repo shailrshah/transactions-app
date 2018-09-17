@@ -41,12 +41,12 @@ public class TransactionController {
 					.status(HttpStatus.OK)
 					.body(new TransactionResponse(transactions, null));
 		} catch (IllegalArgumentException e) {
-			log.error("The request was bad: {}", e);
+			log.error("The request was bad: ", e);
 			return ResponseEntity
 					.status(HttpStatus.BAD_REQUEST)
 					.body(new TransactionResponse(null, e.getMessage()));
 		} catch (Exception e) {
-			log.error("Something went wrong on the server-side: {}", e);
+			log.error("Something went wrong on the server-side: ", e);
 			return ResponseEntity
 					.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new TransactionResponse(null, e.getMessage()));

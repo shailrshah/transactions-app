@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class TransactionRequest {
 	@NotNull(message = "holdingStocks should not be null")
+	@Size(min = 1, message = "At least one stock should be held")
 	@Valid
 	Set<HoldingStock> holdingStocks;
 
